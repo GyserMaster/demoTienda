@@ -1,0 +1,67 @@
+DjangoREST + Vue
+
+---COMMANDOS UTILES---
+python manage.py runserver
+npm run serve
+
+---PASOS PREVIOS PARA EJECUTAR DE MANERA LOCAL---
+
+curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+npm install -g @vue/cli
+vue create demotienda_vue
+    + [Choose Version, Babel, Router, Vuex, CSS Pre-processors]
+    - [Linter]
+    Yes
+    Sass/SCSS (with dart-sass)
+    No
+
+npm install --save axios
+npm install --save vue-router
+npm install --save bulma
+
+ # En caso de tener que instalar los requisitos
+npm i @vue/cli-service
+
+
+---ERRORS---
+nodejs 17: digital envelope routines::unsupported 
+    linux -> export NODE_OPTIONS=--openssl-legacy-provider
+    Dockerfile -> ENV NODE_OPTIONS=--openssl-legacy-provider
+
+---DEPLOYMENT---
+ # añadir al docker-compose.yml
+ # Django API Rest
+ environment:
+      - VIRTUAL_HOST=apitienda.gyser.es
+      - LETSENCRYPT_HOST=apitienda.gyser.es
+      - LETSENCRYPT_EMAIL=gyser.world@gmail.com
+
+ # Vuejs
+ environment:
+      - VIRTUAL_HOST=tienda.gyser.es
+      - LETSENCRYPT_HOST=tienda.gyser.es
+      - LETSENCRYPT_EMAIL=gyser.world@gmail.com
+
+# Agregar a la red de Nginx Proxy en caso de tener una
+networks:
+      - "nginx-proxy-net"
+
+networks:
+ nginx-proxy-net:
+  external: true
+
+
+# en el proyecto de VUE demotienda_vue/src/main.js
+# hay que apuntar al servidor API de Django
+axios.defaults.baseURL = 'https://apitienda.es/'
+
+
+# demoTienda Django
+config/nginx/conf.d/local.conf -> server_name apitienda.gyser.es;
+settings.py -> 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "https://tienda.gyser.es"
+]

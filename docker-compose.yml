@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  django_tienda:
+    build: ./demotienda
+    container_name: "django_tienda"
+    env_file: .env
+    environment: 
+      - GUNICORN_PORT=8005
+      #- VIRTUAL_HOST=apitienda.gyser.es
+      #- LETSENCRYPT_HOST=apitienda.gyser.es
+      #- LETSENCRYPT_EMAIL=gyser.world@gmail.com
+    expose:
+      - 8005
+    volumes: 
+      - ./demotienda:/code
+      - static:/code/static
+      - media:/code/media
+
+  nginx:
+    image: nginx:1.13
+    container_name: "nginx-django-tienda"
+    ports: 
+      - 80:80
+      - 443:443
+    #environment:
+     # - VIRTUAL_HOST=tienda.gyser.es
+     # - LETSENCRYPT_HOST=tienda.gyser.es
+     # - LETSENCRYPT_EMAIL=gyser.world@gmail.com
+    volumes:
+      - ./demotienda/config/nginx/conf.d:/etc/nginx/conf.d:rw
+      - static:/code/static
+      - media:/code/media
+    depends_on: 
+      - django_tienda
+
+  nginx-vue:
+    build: ./demotienda_vue
+    container_name: "nginx-vue-demotienda"
+    ports:
+      - 8080:8080
+
+volumes:
+  static:
+  media:
