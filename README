@@ -1,11 +1,17 @@
 DjangoREST + Vue
 
 ---COMMANDOS UTILES---
-python manage.py runserver
-npm run serve
+
+docker-compose up -d
 
 ---PASOS PREVIOS PARA EJECUTAR DE MANERA LOCAL---
-
+# Django - instalar entorno virtual
+apt-get install python3-venv
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py runserver
+# VUE
 curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
@@ -20,6 +26,8 @@ vue create demotienda_vue
 npm install --save axios
 npm install --save vue-router
 npm install --save bulma
+
+npm run serve
 
  # En caso de tener que instalar los requisitos
 npm i @vue/cli-service
@@ -55,7 +63,7 @@ networks:
 
 # en el proyecto de VUE demotienda_vue/src/main.js
 # hay que apuntar al servidor API de Django
-axios.defaults.baseURL = 'https://apitienda.es/'
+axios.defaults.baseURL = 'https://apitienda.gyser.es/'
 
 
 # demoTienda Django
